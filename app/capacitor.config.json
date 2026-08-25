@@ -1,0 +1,8 @@
+{
+  "appId": "com.electrical.readinglogbook",
+  "appName": "Electrical Reading Logbook",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
