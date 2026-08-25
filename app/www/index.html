@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#153d6f">
+<title>Electrical Reading Logbook</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="toast"></div>
+<main>
+<section id="loginScreen" class="screen">
+  <div class="brand">
+    <div class="logo">ER</div>
+    <h1>Electrical Reading Logbook</h1>
+    <p>Authorized Personnel Only</p>
+  </div>
+  <div class="card">
+    <label>Employee ID<input id="employeeId" autocomplete="username" placeholder="Employee ID"></label>
+    <label>Password<input id="password" type="password" autocomplete="current-password" placeholder="Password"></label>
+    <button id="loginBtn" class="primary wide">LOGIN</button>
+    <div id="loginMessage" class="message"></div>
+  </div>
+  <button id="serverSettingBtn" class="textButton">Server Settings</button>
+</section>
+
+<section id="electricianScreen" class="screen hidden">
+<header class="appHeader">
+  <div><small>ELECTRICAL LOGBOOK</small><h2 id="electricianTitle">Electrician</h2></div>
+  <button onclick="logout()" class="danger mini">Logout</button>
+</header>
+<div class="card infoGrid">
+  <div><span>Date</span><strong id="readingDate">--</strong></div>
+  <div><span>Time</span><strong id="readingTime">--</strong></div>
+  <div><span>Shift</span><strong id="readingShift">--</strong></div>
+  <div><span>Completed</span><strong id="readingProgress">0/80</strong></div>
+</div>
+<div class="serverClock" id="serverClock">Server time: --</div>
+<div id="readingSections"></div>
+<div class="bottomSubmit">
+  <div id="missingMessage">Complete all required readings.</div>
+  <button id="submitReadingBtn" disabled>SUBMIT READING</button>
+</div>
+</section>
+
+<section id="adminScreen" class="screen hidden adminPad">
+<header class="appHeader">
+  <div><small>ADMIN PANEL</small><h2 id="adminTitle">Electrical Admin</h2></div>
+  <button onclick="logout()" class="danger mini">Logout</button>
+</header>
+<div class="adminTabs">
+  <button class="tab active" data-tab="adminHome">Home</button>
+  <button class="tab" data-tab="adminUsers">Users</button>
+  <button class="tab" data-tab="adminDevices">Devices <span id="deviceBadge"></span></button>
+  <button class="tab" data-tab="adminReports">Reports</button>
+</div>
+
+<div id="adminHome" class="adminPage">
+  <div class="card">
+    <h3>Create Electrician</h3>
+    <label>Employee ID<input id="newEmployeeId" placeholder="Example: ELEC001"></label>
+    <label>Electrician Name<input id="newEmployeeName" placeholder="Full Name"></label>
+    <label>Shift<select id="newEmployeeShift"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="General">General</option></select></label>
+    <label>Password<input id="newEmployeePassword" type="password" placeholder="Minimum 6 characters"></label>
+    <button id="createElectricianBtn" class="primary wide">CREATE ELECTRICIAN</button>
+  </div>
+  <div class="card">
+    <h3>System Status</h3>
+    <div class="statusRow"><span>API Server</span><strong id="apiStatus">Checking...</strong></div>
+    <div class="statusRow"><span>Required Fields</span><strong id="fieldStatus">80</strong></div>
+    <div class="statusRow"><span>Database</span><strong>Online</strong></div>
+    <div class="statusRow"><span>Google Sheet</span><strong id="sheetStatus" class="pending">Setup Pending</strong></div>
+  </div>
+</div>
+
+<div id="adminUsers" class="adminPage hidden">
+  <div class="pageTitleRow"><h3>Electricians</h3><button class="mini" onclick="loadUsers()">Refresh</button></div>
+  <div id="usersList"></div>
+</div>
+
+<div id="adminDevices" class="adminPage hidden">
+  <div class="pageTitleRow"><h3>Device Approval</h3><button class="mini" onclick="loadDevices()">Refresh</button></div>
+  <p class="hint">Electrician ka naya phone pehle admin approval maangega.</p>
+  <div id="devicesList"></div>
+</div>
+
+<div id="adminReports" class="adminPage hidden">
+  <div class="card">
+    <h3>Consumption Report</h3>
+    <label>Report Type<select id="reportPeriod"><option value="hourly">Hourly</option><option value="daily" selected>Daily</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></label>
+    <button onclick="loadSummary()" class="primary">View Report</button>
+  </div>
+  <div id="summaryList"></div>
+  <div class="pageTitleRow"><h3>Latest Reading Entries</h3><button class="mini" onclick="loadSubmissions()">Refresh</button></div>
+  <div id="submissionList"></div>
+</div>
+</section>
+
+<dialog id="serverDialog">
+  <div class="dialogBox">
+    <h3>Server Settings</h3>
+    <label>API Address<input id="apiAddress" placeholder="http://server-ip:8790"></label>
+    <div class="dialogButtons"><button onclick="closeServerDialog()" class="secondary">Cancel</button><button onclick="saveServerAddress()">Save</button></div>
+  </div>
+</dialog>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
