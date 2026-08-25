@@ -1,0 +1,49 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - "app/**"
+      - ".github/workflows/build-android.yml"
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install packages
+        run: npm install
+      - name: Create Android project
+        run: npx cap add android
+      - name: Enable HTTP API for testing
+        run: python3 scripts/patch_android.py
+      - name: Capacitor sync
+        run: npx cap sync android
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: electrical-reading-logbook-debug
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
